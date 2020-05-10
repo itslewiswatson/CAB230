@@ -2,12 +2,14 @@ import {
   AppBar,
   Button,
   IconButton,
+  Menu,
+  MenuItem,
   Toolbar,
-  Typography
+  Typography,
 } from "@material-ui/core";
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from "@material-ui/core/styles";
 import { Menu as MenuIcon } from "@material-ui/icons";
-import React from "react";
+import React, { useState } from "react";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,12 +25,18 @@ const useStyles = makeStyles((theme) => ({
 
 export const NavBar = () => {
   const classes = useStyles();
+  const [drawer, setDrawer] = useState(false);
 
   return (
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+          <IconButton
+            edge="start"
+            className={classes.menuButton}
+            color="inherit"
+            aria-label="menu"
+          >
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
@@ -36,6 +44,9 @@ export const NavBar = () => {
           </Typography>
           <Button color="inherit">Login</Button>
         </Toolbar>
+        <Menu>
+          <MenuItem />
+        </Menu>
       </AppBar>
     </div>
   );
