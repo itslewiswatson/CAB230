@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 import { Route, Switch as ReactSwitch } from "react-router-dom";
-import { usePageNotFoundContext } from "../global/PageNotFoundContext";
+import { usePageNotFoundContext } from "../global/page-not-found/PageNotFoundContext";
 
 interface SwitchProps {
   children: ReactNode;

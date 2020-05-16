@@ -1,24 +1,31 @@
+import { Box } from "@material-ui/core";
 import React from "react";
-import "./App.css";
-import logo from "./logo.svg";
+import { BrowserRouter, Route, withRouter } from "react-router-dom";
+import { Switch } from "./common/Switch";
+import { AppShell } from "./global/app-shell/AppShell";
+import { PageNotFoundProvider } from "./global/page-not-found/PageNotFoundContext";
 
 export const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <PageNotFoundProvider>
+        <ShellGateway />
+      </PageNotFoundProvider>
+    </BrowserRouter>
   );
 };
+
+const ShellGateway = () => {
+  return (
+    <Box>
+      <Switch>
+        <Route path="*" render={() => <AppGateway />} />
+      </Switch>
+    </Box>
+  );
+};
+
+const AppGateway = withRouter(({ location }) => {
+  console.log(location.pathname);
+  return <AppShell />;
+});
