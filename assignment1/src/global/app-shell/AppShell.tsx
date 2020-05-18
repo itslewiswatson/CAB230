@@ -1,6 +1,6 @@
-import { Typography } from "@material-ui/core";
 import clsx from "clsx";
 import React, { useState } from "react";
+import { RouteShell } from "../routes/RouteShell";
 import { useStyles } from "./app-shell-styles";
 import { AppDrawer } from "./AppDrawer";
 import { NavBar } from "./NavBar";
@@ -27,7 +27,8 @@ export const AppShell = () => {
         })}
       >
         <div className={classes.drawerHeader} />
-        <Typography variant="h6">Bill Gates has a scat fetish</Typography>
+        {/* <Typography variant="h6">Bill Gates has a scat fetish</Typography> */}
+        <RouteShell />
       </main>
     </div>
   );
