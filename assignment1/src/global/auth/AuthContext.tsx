@@ -6,6 +6,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
+import { getAppUrlFromWindowLocation } from "../../common/get-app-url";
 import { useApiUrl } from "../network/useApiUrl";
 import { useCampfireFetchWithoutAuth } from "../network/useCampfireFetch";
 import { getTokenFromStorage, updateToken } from "./token-storage";
@@ -15,6 +16,11 @@ export interface AuthContextInterface {
   gotToken: boolean;
   login: (email: string, password: string) => void;
   logout: () => void;
+  authState: {
+    isLoading: boolean;
+    error?: string;
+    password?: string;
+  };
 }
 
 export const AuthContext = createContext<AuthContextInterface | undefined>(
@@ -50,6 +56,24 @@ export const AuthProvider = (props: AuthProviderInterface) => {
     error: undefined,
     password: undefined,
   });
+
+  useEffect(() => {
+    if (gotToken) {
+      return;
+    }
+    //console.log(token);
+    // console.log("called it");
+    if (!token) {
+      //console.log("saynora");
+      // clearToken();
+      localStorage.clear();
+      return;
+    }
+    // console.log("the big save");
+    localStorage.setItem("token", token);
+    // console.log(localStorage.getItem("token"));
+    // updateToken(token);
+  }, [token]);
 
   useEffect(() => {
     getTokenFromStorage()
@@ -100,11 +124,21 @@ export const AuthProvider = (props: AuthProviderInterface) => {
           setErrorAuthState(response.status);
           return;
         }
+        setAuthState({
+          isLoading: false,
+          error: undefined,
+          password: undefined,
+        });
         setToken(response.data.token);
+        setGotToken(true);
       });
     },
     [apiUrl, runLogin, setErrorAuthState]
   );
+
+  useEffect(() => {
+    updateToken(token);
+  }, [token]);
 
   useEffect(() => {
     if (loginError && !loginIsLoading) {
@@ -112,11 +146,9 @@ export const AuthProvider = (props: AuthProviderInterface) => {
     }
   }, [loginError, loginIsLoading, setErrorAuthState]);
 
-  // useEffect(() => {}, []);
-
   const logout = useCallback(() => {
     updateToken(undefined).finally(() => {
-      const appUrl = "localhost:3000";
+      const appUrl = getAppUrlFromWindowLocation();
       window.location.replace(`${appUrl}/login`);
     });
   }, []);
@@ -127,8 +159,9 @@ export const AuthProvider = (props: AuthProviderInterface) => {
       login,
       gotToken,
       logout,
+      authState,
     };
-  }, [token, login, gotToken, logout]);
+  }, [token, login, gotToken, logout, authState]);
 
   return <AuthContext.Provider value={value} {...props} />;
 };

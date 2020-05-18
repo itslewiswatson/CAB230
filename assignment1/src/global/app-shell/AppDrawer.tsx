@@ -15,6 +15,7 @@ import {
   History as HistoryIcon,
   LockOpen as LockOpenIcon,
   ShowChart as ShowChartIcon,
+  Work as WorkIcon,
 } from "@material-ui/icons";
 import React from "react";
 import { Link } from "react-router-dom";
@@ -32,10 +33,16 @@ export const AppDrawer = (props: AppDrawerProps) => {
   const theme = useTheme();
 
   const drawerItems = [
-    { link: "/stocks", icon: <ShowChartIcon />, title: "Stocks" },
+    { link: "/all-stocks", icon: <ShowChartIcon />, title: "All Stocks" },
+    {
+      link: "/industry-stocks",
+      icon: <WorkIcon />,
+      title: "Industry Stocks",
+    },
   ];
 
   const { token } = useAuth();
+
   if (!token) {
     drawerItems.unshift({
       link: "/register",
