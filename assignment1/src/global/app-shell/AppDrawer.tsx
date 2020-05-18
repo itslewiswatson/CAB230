@@ -11,10 +11,14 @@ import { useTheme } from "@material-ui/core/styles";
 import {
   ChevronLeft as ChevronLeftIcon,
   ChevronRight as ChevronRightIcon,
-  Inbox as InboxIcon,
-  Mail as MailIcon,
+  ExitToApp as ExitToAppIcon,
+  History as HistoryIcon,
+  LockOpen as LockOpenIcon,
+  ShowChart as ShowChartIcon,
 } from "@material-ui/icons";
 import React from "react";
+import { Link } from "react-router-dom";
+import { useAuth } from "../auth/useAuth";
 import { useStyles } from "./app-shell-styles";
 
 interface AppDrawerProps {
@@ -26,6 +30,30 @@ export const AppDrawer = (props: AppDrawerProps) => {
   const { open, handleClose } = props;
   const classes = useStyles();
   const theme = useTheme();
+
+  const drawerItems = [
+    { link: "/stocks", icon: <ShowChartIcon />, title: "Stocks" },
+  ];
+
+  const { token } = useAuth();
+  if (!token) {
+    drawerItems.unshift({
+      link: "/register",
+      icon: <LockOpenIcon />,
+      title: "Register",
+    });
+    drawerItems.unshift({
+      link: "/login",
+      icon: <ExitToAppIcon />,
+      title: "Login",
+    });
+  } else {
+    drawerItems.push({
+      link: "/price-history",
+      icon: <HistoryIcon />,
+      title: "Price History",
+    });
+  }
 
   return (
     <Drawer
@@ -48,23 +76,10 @@ export const AppDrawer = (props: AppDrawerProps) => {
       </div>
       <Divider />
       <List>
-        {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>
-              {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-            </ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <List>
-        {["All mail", "Trash", "Spam"].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>
-              {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-            </ListItemIcon>
-            <ListItemText primary={text} />
+        {drawerItems.map((item) => (
+          <ListItem button component={Link} to={item.link} key={item.link}>
+            <ListItemIcon>{item.icon}</ListItemIcon>
+            <ListItemText primary={item.title} />
           </ListItem>
         ))}
       </List>

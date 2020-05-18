@@ -1,7 +1,7 @@
 import {
   InputAdornment,
-  TextField,
-  TextFieldProps,
+  OutlinedInput,
+  OutlinedInputProps,
   Theme,
 } from "@material-ui/core";
 import { Visibility as VisibilityIcon } from "@material-ui/icons";
@@ -25,60 +25,51 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-type PasswordFieldProps = {
-  name: string;
+type PasswordInputProps = {
   password: string;
   handlePasswordChange: (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void;
-} & TextFieldProps;
+} & OutlinedInputProps;
 
-export const PasswordField = (props: PasswordFieldProps) => {
+export const PasswordInput = (props: PasswordInputProps) => {
   const {
-    name: fieldName,
     inputRef,
     placeholder,
     label,
-    margin,
     password,
-    handlePasswordChange,
+    handlePasswordChange: onChange,
   } = props;
   const [passwordFieldHidden, setPasswordFieldHidden] = useState(true);
   const classes = useStyles();
 
   return (
-    <TextField
-      {...props}
+    <OutlinedInput
       required
-      name={fieldName}
       inputRef={inputRef}
       label={label ?? "Password"}
       placeholder={placeholder ?? "Password"}
       type={passwordFieldHidden ? "password" : "text"}
       value={password}
-      onChange={handlePasswordChange}
-      margin={margin}
-      InputProps={{
-        endAdornment: (
-          <InputAdornment
-            position="end"
-            onClick={() => {
-              setPasswordFieldHidden(!passwordFieldHidden);
-            }}
-            title="Toggle password visibility"
-          >
-            <VisibilityIcon
-              className={classNames({
-                [classes.hideShowPasswordIcon]: passwordFieldHidden,
-                [classes.hideShowPasswordIconSelected]: !passwordFieldHidden,
-              })}
-              fontSize="default"
-              color="disabled"
-            />
-          </InputAdornment>
-        ),
-        ...props.InputProps,
-      }}
+      onChange={onChange}
+      endAdornment={
+        <InputAdornment
+          position="end"
+          onClick={() => {
+            setPasswordFieldHidden(!passwordFieldHidden);
+          }}
+          title="Toggle password visibility"
+        >
+          <VisibilityIcon
+            className={classNames({
+              [classes.hideShowPasswordIcon]: passwordFieldHidden,
+              [classes.hideShowPasswordIconSelected]: !passwordFieldHidden,
+            })}
+            fontSize="default"
+            color="disabled"
+          />
+        </InputAdornment>
+      }
     />
   );
 };

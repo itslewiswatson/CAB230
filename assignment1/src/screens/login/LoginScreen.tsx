@@ -3,12 +3,15 @@ import {
   Button,
   Card,
   CardContent,
+  FormControl,
   Grid,
-  TextField,
+  InputLabel,
+  OutlinedInput,
   Typography,
 } from "@material-ui/core";
-import React, { ChangeEvent, useMemo, useState } from "react";
-import { PasswordField } from "../../components/password/PasswordField";
+import React, { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { getAppUrlFromWindowLocation } from "../../common/get-app-url";
+import { PasswordInput } from "../../components/password/PasswordInput";
 import { useAuth } from "../../global/auth/useAuth";
 
 export const LoginScreen = () => {
@@ -18,16 +21,11 @@ export const LoginScreen = () => {
     login(formData.email, formData.password);
   };
 
-  /*
-  axios({
-    method: "post",
-    url: `${useApiUrl()}/user/login`,
-    data: {
-      email: "noki@zorque.xyz",
-      password: "campfire",
-    },
-  });
-  */
+  useEffect(() => {
+    if (token) {
+      window.location.replace(`${getAppUrlFromWindowLocation()}/stocks`);
+    }
+  }, [token]);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -51,43 +49,52 @@ export const LoginScreen = () => {
   return (
     <Box>
       <Grid container justify="center">
-        <Grid item xs={4}>
+        <Grid item xs={10} md={6} lg={3}>
           <Card>
             <CardContent>
               <Typography variant="h6">Please login to stonks here</Typography>
               <form>
                 <Grid container spacing={1} direction="column">
-                  <Grid item xs>
-                    <TextField
-                      fullWidth
-                      required
-                      type="email"
-                      variant="outlined"
-                      label="Email Address"
-                      placeholder="name@example.com"
-                      value={email}
-                      onChange={handleEmailChange}
-                    />
+                  <Grid item xs={12}>
+                    <FormControl fullWidth variant="outlined" required>
+                      <InputLabel htmlFor="email">Email Address</InputLabel>
+                      <OutlinedInput
+                        id="email"
+                        value={email}
+                        placeholder="name@example.com"
+                        onChange={handleEmailChange}
+                        label="Email Address"
+                      />
+                    </FormControl>
                   </Grid>
+
                   <Grid item xs>
-                    <PasswordField
-                      fullWidth
-                      required
-                      name="password"
-                      variant="outlined"
-                      value={password}
-                      handlePasswordChange={handlePasswordChange}
-                      password={password}
-                    />
+                    <FormControl fullWidth variant="outlined" required>
+                      <InputLabel htmlFor="password">Password</InputLabel>
+                      <PasswordInput
+                        required
+                        id="password"
+                        value={password}
+                        handlePasswordChange={handlePasswordChange}
+                        password={password}
+                      />
+                    </FormControl>
                   </Grid>
+
                   <Grid item xs>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => handleSubmit(formData)}
-                    >
-                      Login
-                    </Button>
+                    <FormControl>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        type="submit"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleSubmit(formData);
+                        }}
+                      >
+                        Login
+                      </Button>
+                    </FormControl>
                   </Grid>
                 </Grid>
               </form>

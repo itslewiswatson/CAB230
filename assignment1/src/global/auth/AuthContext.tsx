@@ -1,16 +1,17 @@
 import React, {
   createContext,
   ReactElement,
+  useCallback,
   useEffect,
   useMemo,
   useState,
 } from "react";
 import { useApiUrl } from "../network/useApiUrl";
 import { useCampfireFetchWithoutAuth } from "../network/useCampfireFetch";
-import { getTokenFromStorage } from "./token-storage";
+import { getTokenFromStorage, updateToken } from "./token-storage";
 
 export interface AuthContextInterface {
-  token: string | undefined;
+  token?: string;
   gotToken: boolean;
   login: (email: string, password: string) => void;
   logout: () => void;
@@ -43,7 +44,7 @@ interface AuthProviderInterface {
 
 export const AuthProvider = (props: AuthProviderInterface) => {
   const [gotToken, setGotToken] = useState(false);
-  const [token, setToken] = useState<string | undefined>("");
+  const [token, setToken] = useState<string | undefined>();
   const [authState, setAuthState] = useState<AuthState>({
     isLoading: false,
     error: undefined,
@@ -56,15 +57,18 @@ export const AuthProvider = (props: AuthProviderInterface) => {
       .finally(() => setGotToken(true));
   }, []);
 
-  const setErrorAuthState = (status?: number) => {
-    setAuthState({
-      ...authState,
-      isLoading: false,
-      error: status
-        ? "getErrorMessageFromStatusCode(status)"
-        : "Something went wrong, please try again later",
-    });
-  };
+  const setErrorAuthState = useCallback(
+    (status?: number) => {
+      setAuthState({
+        ...authState,
+        isLoading: false,
+        error: status
+          ? "getErrorMessageFromStatusCode(status)"
+          : "Something went wrong, please try again later",
+      });
+    },
+    [setAuthState, authState]
+  );
 
   const apiUrl = useApiUrl();
 
@@ -76,44 +80,46 @@ export const AuthProvider = (props: AuthProviderInterface) => {
     defer: true,
   });
 
-  const login = (email: string, password: string) => {
-    setAuthState({
-      password,
-      isLoading: true,
-      error: undefined,
-    });
-    runLogin({
-      ...axiosOptions,
-      url: `${apiUrl}/user/login`,
-      data: {
-        email,
+  const login = useCallback(
+    (email: string, password: string) => {
+      setAuthState({
         password,
-      },
-    }).then((response) => {
-      console.log("FUCK SAKE");
-      if (!response) return;
-      if (response.status !== 200) {
-        setErrorAuthState(response.status);
-        return;
-      }
-      setToken(response.data.token);
-    });
-  };
+        isLoading: true,
+        error: undefined,
+      });
+      runLogin({
+        ...axiosOptions,
+        url: `${apiUrl}/user/login`,
+        data: {
+          email,
+          password,
+        },
+      }).then((response) => {
+        if (!response) return;
+        if (response.status !== 200) {
+          setErrorAuthState(response.status);
+          return;
+        }
+        setToken(response.data.token);
+      });
+    },
+    [apiUrl, runLogin, setErrorAuthState]
+  );
 
   useEffect(() => {
     if (loginError && !loginIsLoading) {
       setErrorAuthState();
     }
-  }, [loginError, loginIsLoading]);
+  }, [loginError, loginIsLoading, setErrorAuthState]);
 
-  useEffect(() => {}, []);
+  // useEffect(() => {}, []);
 
-  const logout = () => {
-    // updateToken(undefined).finally(() => {
-    //   const appUrl = getAppUrlFromWindowLocation();
-    //   window.location.replace(`${appUrl}/login`);
-    // });
-  };
+  const logout = useCallback(() => {
+    updateToken(undefined).finally(() => {
+      const appUrl = "localhost:3000";
+      window.location.replace(`${appUrl}/login`);
+    });
+  }, []);
 
   const value = useMemo(() => {
     return {

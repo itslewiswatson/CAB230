@@ -1,6 +1,6 @@
 import localforage from "localforage";
 
-const tokenStorageKey = "auth_token";
+const tokenStorageKey = "the_big_bad_token";
 export const updateToken = (
   token: string | undefined
 ): Promise<void> | Promise<string> => {
@@ -17,5 +17,5 @@ const clearToken = (): Promise<void> => {
   return localforage.removeItem(tokenStorageKey);
 };
 export const getTokenFromStorage = (): Promise<string | undefined> => {
-  return localforage.getItem(tokenStorageKey);
+  return localforage.getItem(tokenStorageKey) ?? undefined;
 };

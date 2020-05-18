@@ -34,7 +34,6 @@ const ShellGateway = () => {
   );
 };
 
-const AppGateway = withRouter(({ location }) => {
-  console.log(location.pathname);
+const AppGateway = withRouter(({}) => {
   return <AppShell />;
 });

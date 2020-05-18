@@ -6,7 +6,7 @@ import { AppDrawer } from "./AppDrawer";
 import { NavBar } from "./NavBar";
 
 export const AppShell = () => {
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(true);
   const classes = useStyles();
 
   const handleDrawerOpen = () => {

@@ -124,7 +124,7 @@ export const useAxiosFetch = <ResponseType>({
         error: undefined,
       });
     }
-  }, [status]);
+  }, [status, responseBundle.isLoading]);
 
   useEffect(() => {
     const handleDataResolve = async () => {
@@ -146,6 +146,7 @@ export const useAxiosFetch = <ResponseType>({
       }
     };
     handleDataResolve();
+    // eslint-disable-next-line
   }, [axiosResponse]);
 
   useEffect(() => {
