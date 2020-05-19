@@ -1,5 +1,6 @@
 import React from "react";
 import { Route } from "react-router-dom";
+import { getAppUrlFromWindowLocation } from "../../common/get-app-url";
 import { Switch } from "../../common/Switch";
 import { FourOhFour } from "../../screens/fourohfour/FourOhFour";
 import { PriceHistoryScreen } from "../../screens/history/PriceHistoryScreen";
@@ -14,6 +15,17 @@ export const RouteShell = () => {
 
   return (
     <Switch>
+      <Route
+        path="/"
+        exact
+        render={() => (
+          <>
+            {window.location.replace(
+              `${getAppUrlFromWindowLocation()}/all-stocks`
+            )}
+          </>
+        )}
+      />
       <Route path="/register" exact render={() => <RegisterScreen />} />
       <Route path="/login" exact render={() => <LoginScreen />} />
       <Route path="/all-stocks" exact render={() => <AllStocksScreen />} />

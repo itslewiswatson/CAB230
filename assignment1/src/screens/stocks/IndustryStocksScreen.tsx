@@ -3,48 +3,19 @@ import {
   Card,
   CircularProgress,
   Grid,
-  Select,
+  TextField,
   Typography,
 } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useApiUrl } from "../../global/network/useApiUrl";
 import { useCampfireFetchWithoutAuth } from "../../global/network/useCampfireFetch";
 import { StocksResponse } from "./AllStocksScreen";
 import { StockTable } from "./StockTable";
 
-type SelectableIndustry =
-  | "Health Care"
-  | "Financials"
-  | "Real Estate"
-  | "Industrials"
-  | "Consumer Discretionary"
-  | "Materials"
-  | "Information Technology"
-  | "Energy"
-  | "Consumer Staples"
-  | "Telecommunication Services"
-  | "Utilities";
-
-const allIndustries: SelectableIndustry[] = [
-  "Health Care",
-  "Financials",
-  "Real Estate",
-  "Industrials",
-  "Consumer Discretionary",
-  "Materials",
-  "Information Technology",
-  "Energy",
-  "Consumer Staples",
-  "Telecommunication Services",
-  "Utilities",
-];
-
 export const IndustryStocksScreen = () => {
   const apiUrl = useApiUrl();
 
-  const [selectedIndustry, setSelectedIndustry] = useState<SelectableIndustry>(
-    allIndustries[0]
-  );
+  const [selectedIndustry, setSelectedIndustry] = useState<string>();
 
   const { response, isLoading, reload } = useCampfireFetchWithoutAuth<
     Array<StocksResponse>
@@ -52,12 +23,13 @@ export const IndustryStocksScreen = () => {
     axiosOptions: {
       url: `${apiUrl}/stocks/symbols`,
       method: "get",
-      params: { industry: selectedIndustry },
+      params:
+        selectedIndustry !== "" ? { industry: selectedIndustry } : undefined,
     },
   });
 
   const columns = [
-    { label: "Ticker", name: "symbol", options: { filter: false, sort: true } },
+    { label: "Symbol", name: "symbol", options: { filter: false, sort: true } },
     { label: "Name", name: "name", options: { filter: false, sort: true } },
     {
       label: "Industry",
@@ -70,14 +42,19 @@ export const IndustryStocksScreen = () => {
     if (reload) reload();
   }, [selectedIndustry]);
 
+  const stocksByIndustry = useMemo(() => {
+    if (!response?.data.length) return [];
+    return response.data;
+  }, [response]);
+
   return (
     <Grid container xs spacing={2} direction="column">
       <>
         <Grid item xs={12} md={4}>
           <Card>
             <Box margin={2}>
-              <Typography variant="h6">Please select an industry</Typography>
-              <Select
+              <Typography variant="h6">Search industry</Typography>
+              {/* <Select
                 fullWidth
                 native
                 variant="outlined"
@@ -89,7 +66,13 @@ export const IndustryStocksScreen = () => {
                 {allIndustries.map((industry) => {
                   return <option key={industry}>{industry}</option>;
                 })}
-              </Select>
+              </Select> */}
+              <TextField
+                fullWidth
+                variant="outlined"
+                value={selectedIndustry}
+                onChange={(e: any) => setSelectedIndustry(e.target.value)}
+              />
             </Box>
           </Card>
         </Grid>
@@ -106,13 +89,13 @@ export const IndustryStocksScreen = () => {
               <CircularProgress />
             </Grid>
           </Grid>
-        ) : response && response.data ? (
+        ) : stocksByIndustry ? (
           <>
             <Grid item xs>
               <StockTable
                 columns={columns}
-                data={response.data}
-                title="All Stocks"
+                data={stocksByIndustry}
+                title="Stocks by Industry"
               />
             </Grid>
           </>

@@ -11,6 +11,7 @@ import { useApiUrl } from "../network/useApiUrl";
 import { useCampfireFetchWithoutAuth } from "../network/useCampfireFetch";
 
 export interface AuthContextInterface {
+  isLoggedIn: boolean;
   token?: string;
   login: (email: string, password: string) => void;
   logout: () => void;
@@ -79,6 +80,10 @@ export const AuthProvider = (props: AuthProviderInterface) => {
 
   const apiUrl = useApiUrl();
 
+  const isLoggedIn = useMemo(() => {
+    return token !== undefined && token !== null && token.length > 0;
+  }, [token]);
+
   const {
     run: runLogin,
     error: loginError,
@@ -132,12 +137,13 @@ export const AuthProvider = (props: AuthProviderInterface) => {
 
   const value = useMemo(() => {
     return {
+      isLoggedIn,
       token,
       login,
       logout,
       authState,
     };
-  }, [token, login, logout, authState]);
+  }, [isLoggedIn, token, login, logout, authState]);
 
   return <AuthContext.Provider value={value} {...props} />;
 };

@@ -1,8 +1,9 @@
-import { Box, Card, CircularProgress } from "@material-ui/core";
+import { Box, CircularProgress, Grid, Typography } from "@material-ui/core";
 import moment from "moment";
 import React, { useEffect, useMemo, useState } from "react";
 import { Line as LineGraph } from "react-chartjs-2";
 import { DateTimeParam, StringParam, useQueryParam } from "use-query-params";
+import { LewisCard } from "../../components/card/LewisCard";
 import { useAuth } from "../../global/auth/useAuth";
 import { useApiUrl } from "../../global/network/useApiUrl";
 import {
@@ -30,7 +31,7 @@ export const PriceHistoryScreen = () => {
     console.log(toDate);
   }, [toDate]);
 
-  const { token } = useAuth();
+  const { isLoggedIn } = useAuth();
 
   const [startDate, setStartDate] = useState();
   const [endDate, setEndDate] = useState();
@@ -97,43 +98,47 @@ export const PriceHistoryScreen = () => {
       .reverse();
   }, [stockData]);
 
-  return !token ? (
-    <p>You must be authorized my man</p>
+  return !isLoggedIn ? (
+    <Box width={300} height={200}>
+      <Grid container justify="center">
+        <LewisCard>
+          <Typography>You must be authorized my man</Typography>
+        </LewisCard>
+      </Grid>
+    </Box>
   ) : allStocksIsLoading || isLoading ? (
     <CircularProgress />
-  ) : symbol && response && response.data ? (
-    <Card>
-      <Box margin={3}>
-        <LineGraph
-          data={{
-            labels: stockDates,
-            datasets: [
-              {
-                label: `${symbol} Stock Price`,
-                fill: false,
-                lineTension: 0.2,
-                backgroundColor: "rgba(75,192,192,0.4)",
-                borderColor: "rgba(75,192,192,1)",
-                borderCapStyle: "butt",
-                borderDash: [],
-                borderDashOffset: 0.0,
-                borderJoinStyle: "miter",
-                pointBorderColor: "rgba(75,192,192,1)",
-                pointBackgroundColor: "#fff",
-                pointBorderWidth: 1,
-                pointHoverRadius: 5,
-                pointHoverBackgroundColor: "rgba(75,192,192,1)",
-                pointHoverBorderColor: "rgba(220,220,220,1)",
-                pointHoverBorderWidth: 2,
-                pointRadius: 1,
-                pointHitRadius: 10,
-                data: stockPrices,
-              },
-            ],
-          }}
-        />
-      </Box>
-    </Card>
+  ) : symbol && stockData.length ? (
+    <LewisCard>
+      <LineGraph
+        data={{
+          labels: stockDates,
+          datasets: [
+            {
+              label: `${symbol} Stock Price`,
+              fill: false,
+              lineTension: 0.2,
+              backgroundColor: "rgba(75,192,192,0.4)",
+              borderColor: "rgba(75,192,192,1)",
+              borderCapStyle: "butt",
+              borderDash: [],
+              borderDashOffset: 0.0,
+              borderJoinStyle: "miter",
+              pointBorderColor: "rgba(75,192,192,1)",
+              pointBackgroundColor: "#fff",
+              pointBorderWidth: 1,
+              pointHoverRadius: 5,
+              pointHoverBackgroundColor: "rgba(75,192,192,1)",
+              pointHoverBorderColor: "rgba(220,220,220,1)",
+              pointHoverBorderWidth: 2,
+              pointRadius: 1,
+              pointHitRadius: 10,
+              data: stockPrices,
+            },
+          ],
+        }}
+      />
+    </LewisCard>
   ) : (
     <></>
   );
