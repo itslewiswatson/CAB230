@@ -1,4 +1,6 @@
+import MomentUtils from "@date-io/moment";
 import { Box } from "@material-ui/core";
+import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import React from "react";
 import { BrowserRouter, Route } from "react-router-dom";
 import { QueryParamProvider } from "use-query-params";
@@ -17,7 +19,9 @@ export const App = () => {
           <AuthProvider>
             <LewisThemeProvider>
               <QueryParamProvider>
-                <ShellGateway />
+                <MuiPickersUtilsProvider utils={MomentUtils}>
+                  <ShellGateway />
+                </MuiPickersUtilsProvider>
               </QueryParamProvider>
             </LewisThemeProvider>
           </AuthProvider>

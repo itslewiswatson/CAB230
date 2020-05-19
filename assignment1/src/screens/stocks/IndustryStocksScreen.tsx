@@ -1,12 +1,7 @@
-import {
-  Box,
-  Card,
-  CircularProgress,
-  Grid,
-  TextField,
-  Typography,
-} from "@material-ui/core";
+import { CircularProgress, Grid, TextField } from "@material-ui/core";
 import React, { useEffect, useMemo, useState } from "react";
+import { LewisCard } from "../../components/card/LewisCard";
+import { NotLoggedInCard } from "../../components/card/NotLoggedInCard";
 import { useApiUrl } from "../../global/network/useApiUrl";
 import { useCampfireFetchWithoutAuth } from "../../global/network/useCampfireFetch";
 import { StocksResponse } from "./AllStocksScreen";
@@ -48,12 +43,13 @@ export const IndustryStocksScreen = () => {
   }, [response]);
 
   return (
-    <Grid container xs spacing={2} direction="column">
+    <Grid container xs spacing={3} direction="column">
       <>
+        <NotLoggedInCard />
         <Grid item xs={12} md={4}>
-          <Card>
-            <Box margin={2}>
-              <Typography variant="h6">Search industry</Typography>
+          <LewisCard>
+            <>
+              {/* <Typography variant="h6">Search industry</Typography> */}
               {/* <Select
                 fullWidth
                 native
@@ -69,12 +65,14 @@ export const IndustryStocksScreen = () => {
               </Select> */}
               <TextField
                 fullWidth
+                label="Search for industry"
+                placeholder="eg: industrial, health care, etc"
                 variant="outlined"
                 value={selectedIndustry}
                 onChange={(e: any) => setSelectedIndustry(e.target.value)}
               />
-            </Box>
-          </Card>
+            </>
+          </LewisCard>
         </Grid>
         {isLoading ? (
           <Grid
