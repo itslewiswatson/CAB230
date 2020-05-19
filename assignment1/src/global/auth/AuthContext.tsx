@@ -9,11 +9,9 @@ import React, {
 import { getAppUrlFromWindowLocation } from "../../common/get-app-url";
 import { useApiUrl } from "../network/useApiUrl";
 import { useCampfireFetchWithoutAuth } from "../network/useCampfireFetch";
-import { getTokenFromStorage, updateToken } from "./token-storage";
 
 export interface AuthContextInterface {
   token?: string;
-  gotToken: boolean;
   login: (email: string, password: string) => void;
   logout: () => void;
   authState: {
@@ -49,8 +47,9 @@ interface AuthProviderInterface {
 }
 
 export const AuthProvider = (props: AuthProviderInterface) => {
-  const [gotToken, setGotToken] = useState(false);
-  const [token, setToken] = useState<string | undefined>();
+  const [token, setToken] = useState<string | undefined>(
+    localStorage.getItem("token") ?? undefined
+  );
   const [authState, setAuthState] = useState<AuthState>({
     isLoading: false,
     error: undefined,
@@ -58,28 +57,12 @@ export const AuthProvider = (props: AuthProviderInterface) => {
   });
 
   useEffect(() => {
-    if (gotToken) {
-      return;
-    }
-    //console.log(token);
-    // console.log("called it");
     if (!token) {
-      //console.log("saynora");
-      // clearToken();
       localStorage.clear();
       return;
     }
-    // console.log("the big save");
     localStorage.setItem("token", token);
-    // console.log(localStorage.getItem("token"));
-    // updateToken(token);
   }, [token]);
-
-  useEffect(() => {
-    getTokenFromStorage()
-      .then((tokenFromStorage) => setToken(tokenFromStorage))
-      .finally(() => setGotToken(true));
-  }, []);
 
   const setErrorAuthState = useCallback(
     (status?: number) => {
@@ -130,15 +113,10 @@ export const AuthProvider = (props: AuthProviderInterface) => {
           password: undefined,
         });
         setToken(response.data.token);
-        setGotToken(true);
       });
     },
     [apiUrl, runLogin, setErrorAuthState]
   );
-
-  useEffect(() => {
-    updateToken(token);
-  }, [token]);
 
   useEffect(() => {
     if (loginError && !loginIsLoading) {
@@ -147,21 +125,19 @@ export const AuthProvider = (props: AuthProviderInterface) => {
   }, [loginError, loginIsLoading, setErrorAuthState]);
 
   const logout = useCallback(() => {
-    updateToken(undefined).finally(() => {
-      const appUrl = getAppUrlFromWindowLocation();
-      window.location.replace(`${appUrl}/login`);
-    });
+    setToken(undefined);
+    const appUrl = getAppUrlFromWindowLocation();
+    window.location.replace(`${appUrl}/login`);
   }, []);
 
   const value = useMemo(() => {
     return {
       token,
       login,
-      gotToken,
       logout,
       authState,
     };
-  }, [token, login, gotToken, logout, authState]);
+  }, [token, login, logout, authState]);
 
   return <AuthContext.Provider value={value} {...props} />;
 };

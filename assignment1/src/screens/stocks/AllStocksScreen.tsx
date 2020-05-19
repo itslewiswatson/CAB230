@@ -1,8 +1,8 @@
-import { CircularProgress, Grid } from "@material-ui/core";
-import MUIDataTable from "mui-datatables";
+import { Box, Card, CircularProgress, Grid } from "@material-ui/core";
 import React from "react";
 import { useApiUrl } from "../../global/network/useApiUrl";
 import { useCampfireFetchWithoutAuth } from "../../global/network/useCampfireFetch";
+import { StockTable } from "./StockTable";
 
 export interface StocksResponse {
   name: string;
@@ -28,12 +28,6 @@ export const AllStocksScreen = () => {
     },
   ];
 
-  const onRowClick = (rowData: string[]) => {
-    const ticker = rowData[0];
-
-    console.log(ticker);
-  };
-
   return isLoading ? (
     <Grid
       container
@@ -46,35 +40,21 @@ export const AllStocksScreen = () => {
         <CircularProgress />
       </Grid>
     </Grid>
-  ) : response && response.data ? (
-    <>
-      {/* {response.data.map((item) => {
-        return (
-          <Typography key={item.symbol} variant="body2">
-            {item.name}
-          </Typography>
-        );
-      })} */}
-
-      {/* <div className="ag-theme-alpine" style={{ height: 600 }}>
-        <AgGridReact rowData={response.data}>
-          <AgGridColumn field="symbol"></AgGridColumn>
-          <AgGridColumn field="name"></AgGridColumn>
-          <AgGridColumn field="industry"></AgGridColumn>
-        </AgGridReact>
-      </div> */}
-
-      <MUIDataTable
-        columns={columns}
-        data={response.data}
-        title="All Stocks"
-        options={{
-          selectableRows: "none",
-          onRowClick: (rowData: string[]) => onRowClick(rowData),
-        }}
-      />
-    </>
+  ) : response && response.data && response.data.length ? (
+    <StockTable columns={columns} data={response.data} title="All Stocks" />
   ) : (
-    <p>oh cock</p>
+    <Grid
+      container
+      alignItems="center"
+      alignContent="center"
+      justify="center"
+      style={{ minHeight: "100%", height: "100%" }}
+    >
+      <Grid item style={{ minHeight: "100%", height: "100%" }}>
+        <Card>
+          <Box>oh cock</Box>
+        </Card>
+      </Grid>
+    </Grid>
   );
 };

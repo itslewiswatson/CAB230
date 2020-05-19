@@ -10,12 +10,13 @@ import {
   Typography,
 } from "@material-ui/core";
 import React, { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { getAppUrlFromWindowLocation } from "../../common/get-app-url";
 import { PasswordInput } from "../../components/password/PasswordInput";
 import { useAuth } from "../../global/auth/useAuth";
 
 export const LoginScreen = () => {
   const { login, token, authState } = useAuth();
-  const { isLoading, error } = authState;
+  const { isLoading } = authState;
 
   const handleSubmit = (formData: { email: string; password: string }) => {
     login(formData.email, formData.password);
@@ -25,11 +26,11 @@ export const LoginScreen = () => {
     console.log(authState);
   }, [authState]);
 
-  // useEffect(() => {
-  //   if (token !== undefined && token !== null && token.length > 0) {
-  //     window.location.replace(`${getAppUrlFromWindowLocation()}/stocks`);
-  //   }
-  // }, [token]);
+  useEffect(() => {
+    if (token !== undefined && token !== null && token.length > 0) {
+      window.location.replace(`${getAppUrlFromWindowLocation()}/all-stocks`);
+    }
+  }, [token]);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

@@ -1,6 +1,7 @@
 import { Box } from "@material-ui/core";
 import React from "react";
-import { BrowserRouter, Route, withRouter } from "react-router-dom";
+import { BrowserRouter, Route } from "react-router-dom";
+import { QueryParamProvider } from "use-query-params";
 import { Switch } from "./common/Switch";
 import { AppShell } from "./global/app-shell/AppShell";
 import { AuthProvider } from "./global/auth/AuthContext";
@@ -15,7 +16,9 @@ export const App = () => {
         <ApiProvider>
           <AuthProvider>
             <LewisThemeProvider>
-              <ShellGateway />
+              <QueryParamProvider>
+                <ShellGateway />
+              </QueryParamProvider>
             </LewisThemeProvider>
           </AuthProvider>
         </ApiProvider>
@@ -34,6 +37,6 @@ const ShellGateway = () => {
   );
 };
 
-const AppGateway = withRouter(({}) => {
+const AppGateway = () => {
   return <AppShell />;
-});
+};

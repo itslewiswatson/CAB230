@@ -6,11 +6,11 @@ import {
   Select,
   Typography,
 } from "@material-ui/core";
-import MUIDataTable from "mui-datatables";
 import React, { useEffect, useState } from "react";
 import { useApiUrl } from "../../global/network/useApiUrl";
 import { useCampfireFetchWithoutAuth } from "../../global/network/useCampfireFetch";
 import { StocksResponse } from "./AllStocksScreen";
+import { StockTable } from "./StockTable";
 
 type SelectableIndustry =
   | "Health Care"
@@ -66,12 +66,6 @@ export const IndustryStocksScreen = () => {
     },
   ];
 
-  const onRowClick = (rowData: string[]) => {
-    const ticker = rowData[0];
-
-    console.log(ticker);
-  };
-
   useEffect(() => {
     if (reload) reload();
   }, [selectedIndustry]);
@@ -115,14 +109,10 @@ export const IndustryStocksScreen = () => {
         ) : response && response.data ? (
           <>
             <Grid item xs>
-              <MUIDataTable
+              <StockTable
                 columns={columns}
                 data={response.data}
-                title="Stocks by Industry"
-                options={{
-                  selectableRows: "none",
-                  onRowClick: (rowData: string[]) => onRowClick(rowData),
-                }}
+                title="All Stocks"
               />
             </Grid>
           </>

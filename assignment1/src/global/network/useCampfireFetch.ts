@@ -104,18 +104,19 @@ export const useCampfireFetch = <ResponseType>({
   defer = false,
 }: UseCampfireFetchOptions): UseCampfireFetchApi<ResponseType> => {
   const { token } = useAuth();
-  if (!token) {
-    throw new Error(
-      `Campfire's useFetch default behaviour requires an authorization token to be returned by useAuth. 
-      If you are making a request that doesn't require auth then pass withAuth: false into the useFetch options.`
-    );
-  }
+  // if (!token) {
+  //   throw new Error(
+  //     `Campfire's useFetch default behaviour requires an authorization token to be returned by useAuth.
+  //     If you are making a request that doesn't require auth then pass withAuth: false into the useFetch options.`
+  //   );
+  // }
 
   const authorizationAxiosOptions: AxiosRequestConfig = {
     ...axiosOptions,
     headers: {
       ...(axiosOptions ? axiosOptions.headers : {}),
-      Authorization: `JWT ${token}`,
+      Authorization:
+        token !== undefined && token !== null ? `Bearer ${token}` : undefined,
     },
   };
 

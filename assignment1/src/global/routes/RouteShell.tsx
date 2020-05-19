@@ -2,6 +2,7 @@ import React from "react";
 import { Route } from "react-router-dom";
 import { Switch } from "../../common/Switch";
 import { FourOhFour } from "../../screens/fourohfour/FourOhFour";
+import { PriceHistoryScreen } from "../../screens/history/PriceHistoryScreen";
 import { LoginScreen } from "../../screens/login/LoginScreen";
 import { RegisterScreen } from "../../screens/register/RegisterScreen";
 import { AllStocksScreen } from "../../screens/stocks/AllStocksScreen";
@@ -20,6 +21,11 @@ export const RouteShell = () => {
         path="/industry-stocks"
         exact
         render={() => <IndustryStocksScreen />}
+      />
+      <Route
+        path="/price-history"
+        exact
+        render={() => <PriceHistoryScreen />}
       />
       {pageNotFound ? <Route path="*" render={() => <FourOhFour />} /> : null}
     </Switch>
