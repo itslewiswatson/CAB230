@@ -4,7 +4,7 @@ import React from "react";
 import { useApiUrl } from "../../global/network/useApiUrl";
 import { useCampfireFetchWithoutAuth } from "../../global/network/useCampfireFetch";
 
-interface StocksResponse {
+export interface StocksResponse {
   name: string;
   symbol: string;
   industry: string;
