@@ -2,15 +2,15 @@ import {
   CircularProgress,
   Grid,
   TextField,
-  Typography,
+  Typography
 } from "@material-ui/core";
 import React, { useEffect, useMemo, useState } from "react";
 import { DebounceInput } from "react-debounce-input";
 import { LewisCard } from "../../components/card/LewisCard";
 import { NotLoggedInCard } from "../../components/card/NotLoggedInCard";
+import { StocksResponse } from "../../components/stocks/SingleStockCard";
 import { useApiUrl } from "../../global/network/useApiUrl";
-import { useCampfireFetch } from "../../global/network/useCampfireFetch";
-import { StocksResponse } from "./AllStocksScreen";
+import { useCustomFetch } from "../../global/network/useCustomFetch";
 import { StockTable } from "./StockTable";
 
 export const IndustryStocksScreen = () => {
@@ -18,7 +18,7 @@ export const IndustryStocksScreen = () => {
 
   const [selectedIndustry, setSelectedIndustry] = useState<string>();
 
-  const { run, response, isLoading } = useCampfireFetch<Array<StocksResponse>>({
+  const { run, response, isLoading } = useCustomFetch<StocksResponse[]>({
     defer: true,
   });
 

@@ -2,19 +2,15 @@ import { CircularProgress, Grid, Typography } from "@material-ui/core";
 import React from "react";
 import { LewisCard } from "../../components/card/LewisCard";
 import { NotLoggedInCard } from "../../components/card/NotLoggedInCard";
+import { StocksResponse } from "../../components/stocks/SingleStockCard";
 import { useApiUrl } from "../../global/network/useApiUrl";
-import { useCampfireFetch } from "../../global/network/useCampfireFetch";
+import { useCustomFetch } from "../../global/network/useCustomFetch";
 import { StockTable } from "./StockTable";
-export interface StocksResponse {
-  name: string;
-  symbol: string;
-  industry: string;
-}
 
 export const AllStocksScreen = () => {
   const apiUrl = useApiUrl();
 
-  const { response, isLoading } = useCampfireFetch<Array<StocksResponse>>({
+  const { response, isLoading } = useCustomFetch<Array<StocksResponse>>({
     axiosOptions: { url: `${apiUrl}/stocks/symbols` },
   });
 

@@ -68,7 +68,7 @@ export const useAxiosFetch = <ResponseType>({
     } catch (error) {
       /**
        * We have the options to huck the response up to the next level even if it was not a
-       * 2xx status. We do this so that we can handle well formatted error responses in our useCampfireFetch, but by default we want axios to behave normally.
+       * 2xx status. We do this so that we can handle well formatted error responses in our useCustomFetch, but by default we want axios to behave normally.
        */
       if (!allowErrorResponse || !error.response) {
         throw error;

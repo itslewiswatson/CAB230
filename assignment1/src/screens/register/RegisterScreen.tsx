@@ -14,7 +14,7 @@ import { getAppUrlFromWindowLocation } from "../../common/get-app-url";
 import { PasswordInput } from "../../components/password/PasswordInput";
 import { useAuth } from "../../global/auth/useAuth";
 import { useApiUrl } from "../../global/network/useApiUrl";
-import { useCampfireFetch } from "../../global/network/useCampfireFetch";
+import { useCustomFetch } from "../../global/network/useCustomFetch";
 import { useSnackbar } from "../../global/snackbar/useSnackbar";
 
 interface RegistrationResponse {
@@ -26,7 +26,7 @@ export const RegisterScreen = () => {
   const { setSnackbar } = useSnackbar();
   const apiUrl = useApiUrl();
   const appUrl = getAppUrlFromWindowLocation();
-  const { run, isLoading } = useCampfireFetch<RegistrationResponse>({
+  const { run, isLoading } = useCustomFetch<RegistrationResponse>({
     defer: true,
   });
 

@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import { getAppUrlFromWindowLocation } from "../../common/get-app-url";
 import { useApiUrl } from "../network/useApiUrl";
-import { useCampfireFetchWithoutAuth } from "../network/useCampfireFetch";
+import { useCustomFetchWithoutAuth } from "../network/useCustomFetch";
 
 export interface AuthContextInterface {
   isLoggedIn: boolean;
@@ -98,7 +98,7 @@ export const AuthProvider = (props: AuthProviderInterface) => {
     run: runLogin,
     error: loginError,
     isLoading: loginIsLoading,
-  } = useCampfireFetchWithoutAuth<TokenResponse>({
+  } = useCustomFetchWithoutAuth<TokenResponse>({
     defer: true,
   });
 

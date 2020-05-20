@@ -13,10 +13,13 @@ import { DebounceInput } from "react-debounce-input";
 import { DateParam, StringParam, useQueryParam } from "use-query-params";
 import { LewisCard } from "../../components/card/LewisCard";
 import { NotLoggedInCard } from "../../components/card/NotLoggedInCard";
+import {
+  SingleStockCard,
+  StocksDataResponse,
+} from "../../components/stocks/SingleStockCard";
 import { useAuth } from "../../global/auth/useAuth";
 import { useApiUrl } from "../../global/network/useApiUrl";
-import { useCampfireFetch } from "../../global/network/useCampfireFetch";
-import { StocksResponse } from "../stocks/AllStocksScreen";
+import { useCustomFetch } from "../../global/network/useCustomFetch";
 import { StockTable } from "../stocks/StockTable";
 
 const columns = [
@@ -44,16 +47,6 @@ const columns = [
   { label: "Close", name: "close", options: { filter: false, sort: true } },
   { label: "Volume", name: "volumes", options: { filter: false, sort: true } },
 ];
-
-type StocksDataResponse = {
-  message?: string;
-  timestamp: string;
-  open: number;
-  high: number;
-  low: number;
-  close: number;
-  volumes: number;
-} & StocksResponse;
 
 export const PriceHistoryScreen = () => {
   const apiUrl = useApiUrl();
@@ -84,7 +77,7 @@ export const PriceHistoryScreen = () => {
 
   const { isLoggedIn } = useAuth();
 
-  const { run, response, isLoading } = useCampfireFetch<
+  const { run, response, isLoading } = useCustomFetch<
     StocksDataResponse[] | StocksDataResponse
   >({
     defer: true,
@@ -260,29 +253,7 @@ export const PriceHistoryScreen = () => {
               ) : symbol &&
                 response?.status !== 404 &&
                 stockData.length === 1 ? (
-                <LewisCard>
-                  <Grid container spacing={1} direction="column">
-                    <Grid item>
-                      <Typography variant="h6">
-                        {`Only one stock price found for ${stockData[0].name} (${stockData[0].symbol})`}
-                      </Typography>
-                    </Grid>
-                    <Grid item>
-                      <Typography>{`Symbol: ${stockData[0].symbol}`}</Typography>
-                      <Typography>{`Company: ${stockData[0].name}`}</Typography>
-                      <Typography>{`Industry: ${stockData[0].industry}`}</Typography>
-                      <Typography>{`Date: ${stockData[0].timestamp.substring(
-                        0,
-                        10
-                      )}`}</Typography>
-                      <Typography>{`Open: $${stockData[0].open}`}</Typography>
-                      <Typography>{`High: $${stockData[0].high}`}</Typography>
-                      <Typography>{`Low: $${stockData[0].low}`}</Typography>
-                      <Typography>{`Close: $${stockData[0].close}`}</Typography>
-                      <Typography>{`Volume: ${stockData[0].volumes}`}</Typography>
-                    </Grid>
-                  </Grid>
-                </LewisCard>
+                <SingleStockCard stock={stockData[0]} />
               ) : (
                 <LewisCard>
                   <>

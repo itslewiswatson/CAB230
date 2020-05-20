@@ -9,6 +9,7 @@ import {
 } from "@material-ui/core";
 import { useTheme } from "@material-ui/core/styles";
 import {
+  Business as BusinessIcon,
   ChevronLeft as ChevronLeftIcon,
   ChevronRight as ChevronRightIcon,
   ExitToApp as ExitToAppIcon,
@@ -45,6 +46,11 @@ export const AppDrawer = (props: AppDrawerProps) => {
       link: "/price-history",
       icon: <HistoryIcon />,
       title: "Price History",
+    },
+    {
+      link: "/company-information",
+      icon: <BusinessIcon />,
+      title: "Company Information",
     },
   ];
 

@@ -2,6 +2,7 @@ import React from "react";
 import { Route } from "react-router-dom";
 import { getAppUrlFromWindowLocation } from "../../common/get-app-url";
 import { Switch } from "../../common/Switch";
+import { CompanyInfoScreen } from "../../screens/company/CompanyInfoScreen";
 import { FourOhFour } from "../../screens/fourohfour/FourOhFour";
 import { PriceHistoryScreen } from "../../screens/history/PriceHistoryScreen";
 import { LoginScreen } from "../../screens/login/LoginScreen";
@@ -28,6 +29,7 @@ export const RouteShell = () => {
           </>
         )}
       />
+      <Route path="/company-information" render={() => <CompanyInfoScreen />} />
       <Route path="/register" exact render={() => <RegisterScreen />} />
       <Route path="/login" exact render={() => <LoginScreen />} />
       <Route

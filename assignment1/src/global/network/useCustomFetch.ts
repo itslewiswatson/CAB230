@@ -8,12 +8,12 @@ import {
   UseAxiosFetchApi,
 } from "./useAxiosFetch";
 
-export interface UseCampfireFetchOptions {
+export interface UseCustomFetchOptions {
   axiosOptions?: AxiosRequestConfig;
   defer?: boolean;
 }
 
-export type UseCampfireFetchApi<T> = UseAxiosFetchApi<T> & {
+export type UseCustomFetchApi<T> = UseAxiosFetchApi<T> & {
   status: "initial" | "pending" | "fulfilled" | "rejected";
 };
 
@@ -22,10 +22,10 @@ export type UseCampfireFetchApi<T> = UseAxiosFetchApi<T> & {
  * inside AuthContext.tsx without running into conditional
  * hook render issues that would arise otherwise.
  */
-export const useCampfireFetchWithoutAuth = <ResponseType>({
+export const useCustomFetchWithoutAuth = <ResponseType>({
   axiosOptions = {},
   defer = false,
-}: UseCampfireFetchOptions): UseCampfireFetchApi<ResponseType> => {
+}: UseCustomFetchOptions): UseCustomFetchApi<ResponseType> => {
   type ResponseBundle = {
     error: Error | undefined;
     isLoading: boolean;
@@ -102,10 +102,10 @@ export const useCampfireFetchWithoutAuth = <ResponseType>({
   };
 };
 
-export const useCampfireFetch = <ResponseType>({
+export const useCustomFetch = <ResponseType>({
   axiosOptions,
   defer = false,
-}: UseCampfireFetchOptions): UseCampfireFetchApi<ResponseType> => {
+}: UseCustomFetchOptions): UseCustomFetchApi<ResponseType> => {
   const { token } = useAuth();
 
   const authorizationAxiosOptions: AxiosRequestConfig = {
@@ -117,7 +117,7 @@ export const useCampfireFetch = <ResponseType>({
     },
   };
 
-  return useCampfireFetchWithoutAuth<ResponseType>({
+  return useCustomFetchWithoutAuth<ResponseType>({
     axiosOptions: authorizationAxiosOptions,
     defer,
   });
