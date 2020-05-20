@@ -42,7 +42,7 @@ export const CompanyInfoScreen = () => {
         <CustomCard>
           <DebounceInput
             fullWidth
-            minLength={2}
+            minLength={1}
             debounceTimeout={300}
             label="Symbol"
             placeholder="eg: AAPL"

@@ -2,7 +2,7 @@ import {
   CircularProgress,
   Grid,
   TextField,
-  Typography,
+  Typography
 } from "@material-ui/core";
 import React, { useEffect, useMemo, useState } from "react";
 import { DebounceInput } from "react-debounce-input";
@@ -55,7 +55,7 @@ export const IndustryStocksScreen = () => {
           <CustomCard>
             <DebounceInput
               fullWidth
-              minLength={2}
+              minLength={1}
               debounceTimeout={300}
               label="Search for industry"
               placeholder="eg: industrial, health care, etc"
