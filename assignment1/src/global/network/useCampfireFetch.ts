@@ -11,14 +11,17 @@ import {
 export interface UseCampfireFetchOptions {
   axiosOptions?: AxiosRequestConfig;
   defer?: boolean;
-  withAuth?: boolean;
-  identityRefresh?: () => void;
 }
 
 export type UseCampfireFetchApi<T> = UseAxiosFetchApi<T> & {
   status: "initial" | "pending" | "fulfilled" | "rejected";
 };
 
+/*
+ * This function needs to exist so we can be run requests
+ * inside AuthContext.tsx without running into conditional
+ * hook render issues that would arise otherwise.
+ */
 export const useCampfireFetchWithoutAuth = <ResponseType>({
   axiosOptions = {},
   defer = false,
@@ -104,12 +107,6 @@ export const useCampfireFetch = <ResponseType>({
   defer = false,
 }: UseCampfireFetchOptions): UseCampfireFetchApi<ResponseType> => {
   const { token } = useAuth();
-  // if (!token) {
-  //   throw new Error(
-  //     `Campfire's useFetch default behaviour requires an authorization token to be returned by useAuth.
-  //     If you are making a request that doesn't require auth then pass withAuth: false into the useFetch options.`
-  //   );
-  // }
 
   const authorizationAxiosOptions: AxiosRequestConfig = {
     ...axiosOptions,

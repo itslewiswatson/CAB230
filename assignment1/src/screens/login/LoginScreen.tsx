@@ -13,8 +13,10 @@ import React, { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { getAppUrlFromWindowLocation } from "../../common/get-app-url";
 import { PasswordInput } from "../../components/password/PasswordInput";
 import { useAuth } from "../../global/auth/useAuth";
+import { useSnackbar } from "../../global/snackbar/useSnackbar";
 
 export const LoginScreen = () => {
+  const { setSnackbar } = useSnackbar();
   const { login, isLoggedIn, authState } = useAuth();
   const { isLoading } = authState;
 
@@ -23,7 +25,14 @@ export const LoginScreen = () => {
   };
 
   useEffect(() => {
-    console.log(authState);
+    if (authState.error) {
+      setSnackbar({
+        open: true,
+        message: authState.error,
+      });
+      return;
+    }
+    // eslint-disable-next-line
   }, [authState]);
 
   useEffect(() => {
@@ -54,7 +63,7 @@ export const LoginScreen = () => {
   return (
     <Box>
       <Grid container justify="center">
-        <Grid item xs={10} md={6} lg={3}>
+        <Grid item xs={10} md={6}>
           <Card>
             <CardContent>
               <Typography variant="h6">Please login to stonks here</Typography>

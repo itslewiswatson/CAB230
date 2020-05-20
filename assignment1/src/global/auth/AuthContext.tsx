@@ -47,10 +47,22 @@ interface AuthProviderInterface {
   children: ReactElement;
 }
 
+const getErrorMessageFromStatusCode = (code: number) => {
+  if (code === 401) {
+    return "Incorrect email address or password";
+  }
+  if (code === 500) {
+    return "An unknown error occurred. Try again later.";
+  }
+};
+
 export const AuthProvider = (props: AuthProviderInterface) => {
+  const apiUrl = useApiUrl();
+
   const [token, setToken] = useState<string | undefined>(
     localStorage.getItem("token") ?? undefined
   );
+
   const [authState, setAuthState] = useState<AuthState>({
     isLoading: false,
     error: undefined,
@@ -71,14 +83,12 @@ export const AuthProvider = (props: AuthProviderInterface) => {
         ...authState,
         isLoading: false,
         error: status
-          ? "getErrorMessageFromStatusCode(status)"
+          ? getErrorMessageFromStatusCode(status)
           : "Something went wrong, please try again later",
       });
     },
     [setAuthState, authState]
   );
-
-  const apiUrl = useApiUrl();
 
   const isLoggedIn = useMemo(() => {
     return token !== undefined && token !== null && token.length > 0;

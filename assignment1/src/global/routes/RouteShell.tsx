@@ -8,10 +8,12 @@ import { LoginScreen } from "../../screens/login/LoginScreen";
 import { RegisterScreen } from "../../screens/register/RegisterScreen";
 import { AllStocksScreen } from "../../screens/stocks/AllStocksScreen";
 import { IndustryStocksScreen } from "../../screens/stocks/IndustryStocksScreen";
+import { useAuth } from "../auth/useAuth";
 import { usePageNotFoundContext } from "../page-not-found/PageNotFoundContext";
 
 export const RouteShell = () => {
   const { pageNotFound } = usePageNotFoundContext();
+  const { logout } = useAuth();
 
   return (
     <Switch>
@@ -28,6 +30,14 @@ export const RouteShell = () => {
       />
       <Route path="/register" exact render={() => <RegisterScreen />} />
       <Route path="/login" exact render={() => <LoginScreen />} />
+      <Route
+        path="/logout"
+        exact
+        render={() => {
+          logout();
+          return <></>;
+        }}
+      />
       <Route path="/all-stocks" exact render={() => <AllStocksScreen />} />
       <Route
         path="/industry-stocks"

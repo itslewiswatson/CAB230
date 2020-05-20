@@ -6,10 +6,11 @@ interface StockTableProps {
   columns: MUIDataTableColumnDef[];
   title: string;
   data: (object | number[] | string[])[];
+  onRowClick?: (rowData: string[]) => void;
 }
 
 export const StockTable = (props: StockTableProps) => {
-  const { title, data, columns } = props;
+  const { title, data, columns, onRowClick: onRowClickOverride } = props;
 
   return (
     <MUIDataTable
@@ -18,7 +19,9 @@ export const StockTable = (props: StockTableProps) => {
       title={title}
       options={{
         selectableRows: "none",
-        onRowClick: (rowData: string[]) => onRowClick(rowData),
+        onRowClick: !onRowClickOverride
+          ? (rowData: string[]) => onRowClick(rowData)
+          : onRowClickOverride,
       }}
     />
   );

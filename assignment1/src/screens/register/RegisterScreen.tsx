@@ -9,30 +9,73 @@ import {
   OutlinedInput,
   Typography,
 } from "@material-ui/core";
-import React, { ChangeEvent, useEffect, useMemo, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { getAppUrlFromWindowLocation } from "../../common/get-app-url";
 import { PasswordInput } from "../../components/password/PasswordInput";
 import { useAuth } from "../../global/auth/useAuth";
+import { useApiUrl } from "../../global/network/useApiUrl";
+import { useCampfireFetch } from "../../global/network/useCampfireFetch";
+import { useSnackbar } from "../../global/snackbar/useSnackbar";
+
+interface RegistrationResponse {
+  message: string;
+}
 
 export const RegisterScreen = () => {
-  const handleSubmit = (formData: { email: string; password: string }) => {
-    console.log("uuu");
+  const { isLoggedIn } = useAuth();
+  const { setSnackbar } = useSnackbar();
+  const apiUrl = useApiUrl();
+  const appUrl = getAppUrlFromWindowLocation();
+  const { run, isLoading } = useCampfireFetch<RegistrationResponse>({
+    defer: true,
+  });
+
+  const handleSubmit = () => {
+    run({
+      url: `${apiUrl}/user/register`,
+      method: "post",
+      data: {
+        email,
+        password,
+      },
+    })
+      .then((res) => {
+        if (res.status === 400) {
+          setSnackbar({
+            open: true,
+            message: "An email and password are required",
+          });
+          return;
+        }
+        if (res.status === 409) {
+          setSnackbar({
+            open: true,
+            message: "A user with this email already exists",
+          });
+          return;
+        }
+        setSnackbar({
+          open: true,
+          message: res.data.message,
+        });
+        window.location.replace(`${appUrl}/login`);
+      })
+      .catch(() =>
+        setSnackbar({
+          open: true,
+          message: "Could not register. Please try again.",
+        })
+      );
   };
 
-  const { isLoggedIn } = useAuth();
-
   useEffect(() => {
-    if (!isLoggedIn) {
+    if (isLoggedIn) {
       window.location.replace(`${getAppUrlFromWindowLocation()}/all-stocks`);
     }
   }, [isLoggedIn]);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  const formData = useMemo(() => {
-    return { email, password };
-  }, [email, password]);
 
   const handlePasswordChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -49,7 +92,7 @@ export const RegisterScreen = () => {
   return (
     <Box>
       <Grid container justify="center">
-        <Grid item xs={10} md={6} lg={3}>
+        <Grid item xs={10} md={6}>
           <Card>
             <CardContent>
               <Typography variant="h6">
@@ -66,6 +109,7 @@ export const RegisterScreen = () => {
                         placeholder="name@example.com"
                         onChange={handleEmailChange}
                         label="Email Address"
+                        disabled={isLoading}
                       />
                     </FormControl>
                   </Grid>
@@ -79,7 +123,7 @@ export const RegisterScreen = () => {
                         value={password}
                         handlePasswordChange={handlePasswordChange}
                         password={password}
-                        // disabled={isLoading}
+                        disabled={isLoading}
                       />
                     </FormControl>
                   </Grid>
@@ -92,9 +136,9 @@ export const RegisterScreen = () => {
                         type="submit"
                         onClick={(e) => {
                           e.preventDefault();
-                          handleSubmit(formData);
+                          handleSubmit();
                         }}
-                        // disabled={isLoading}
+                        disabled={isLoading}
                       >
                         Register
                       </Button>

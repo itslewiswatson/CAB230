@@ -1,11 +1,10 @@
-import { Box, Card, CircularProgress, Grid } from "@material-ui/core";
+import { CircularProgress, Grid, Typography } from "@material-ui/core";
 import React from "react";
+import { LewisCard } from "../../components/card/LewisCard";
 import { NotLoggedInCard } from "../../components/card/NotLoggedInCard";
-import { useAuth } from "../../global/auth/useAuth";
 import { useApiUrl } from "../../global/network/useApiUrl";
-import { useCampfireFetchWithoutAuth } from "../../global/network/useCampfireFetch";
+import { useCampfireFetch } from "../../global/network/useCampfireFetch";
 import { StockTable } from "./StockTable";
-
 export interface StocksResponse {
   name: string;
   symbol: string;
@@ -14,11 +13,8 @@ export interface StocksResponse {
 
 export const AllStocksScreen = () => {
   const apiUrl = useApiUrl();
-  const { isLoggedIn } = useAuth();
 
-  const { response, isLoading } = useCampfireFetchWithoutAuth<
-    Array<StocksResponse>
-  >({
+  const { response, isLoading } = useCampfireFetch<Array<StocksResponse>>({
     axiosOptions: { url: `${apiUrl}/stocks/symbols` },
   });
 
@@ -32,44 +28,38 @@ export const AllStocksScreen = () => {
     },
   ];
 
-  return isLoading ? (
-    <Grid
-      container
-      alignItems="center"
-      alignContent="center"
-      justify="center"
-      style={{ minHeight: "100%", height: "100%" }}
-    >
-      <Grid item style={{ minHeight: "100%", height: "100%" }}>
-        <CircularProgress />
-      </Grid>
-    </Grid>
-  ) : response && response.data && response.data.length ? (
+  return (
     <>
       <Grid container spacing={3} direction="column">
         <NotLoggedInCard />
         <Grid item xs>
-          <StockTable
-            columns={columns}
-            data={response.data}
-            title="All Stocks"
-          />
+          {isLoading ? (
+            <Grid
+              container
+              alignItems="center"
+              alignContent="center"
+              justify="center"
+              style={{ minHeight: "100%", height: "100%" }}
+            >
+              <Grid item style={{ minHeight: "100%", height: "100%" }}>
+                <CircularProgress />
+              </Grid>
+            </Grid>
+          ) : response && response.data && response.data.length ? (
+            <StockTable
+              columns={columns}
+              data={response.data}
+              title="All Stocks"
+            />
+          ) : (
+            <LewisCard>
+              <Typography>
+                Something has gone wrong. Try again later.
+              </Typography>
+            </LewisCard>
+          )}
         </Grid>
       </Grid>
     </>
-  ) : (
-    <Grid
-      container
-      alignItems="center"
-      alignContent="center"
-      justify="center"
-      style={{ minHeight: "100%", height: "100%" }}
-    >
-      <Grid item style={{ minHeight: "100%", height: "100%" }}>
-        <Card>
-          <Box>oh cock</Box>
-        </Card>
-      </Grid>
-    </Grid>
   );
 };

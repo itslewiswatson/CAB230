@@ -15,6 +15,7 @@ import {
   History as HistoryIcon,
   LockOpen as LockOpenIcon,
   ShowChart as ShowChartIcon,
+  VpnKey as VpnKeyIcon,
   Work as WorkIcon,
 } from "@material-ui/icons";
 import React from "react";
@@ -31,36 +32,36 @@ export const AppDrawer = (props: AppDrawerProps) => {
   const { open, handleClose } = props;
   const classes = useStyles();
   const theme = useTheme();
+  const { isLoggedIn } = useAuth();
 
-  const drawerItems = [
+  const primaryDrawerItems = [
     { link: "/all-stocks", icon: <ShowChartIcon />, title: "All Stocks" },
     {
       link: "/industry-stocks",
       icon: <WorkIcon />,
       title: "Industry Stocks",
     },
-  ];
-
-  const { token } = useAuth();
-
-  if (!token) {
-    drawerItems.unshift({
-      link: "/register",
-      icon: <LockOpenIcon />,
-      title: "Register",
-    });
-    drawerItems.unshift({
-      link: "/login",
-      icon: <ExitToAppIcon />,
-      title: "Login",
-    });
-  } else {
-    drawerItems.push({
+    {
       link: "/price-history",
       icon: <HistoryIcon />,
       title: "Price History",
-    });
-  }
+    },
+  ];
+
+  const secondaryDrawerItems = isLoggedIn
+    ? [{ link: "/logout", icon: <ExitToAppIcon />, title: "Logout" }]
+    : [
+        {
+          link: "/register",
+          icon: <LockOpenIcon />,
+          title: "Register",
+        },
+        {
+          link: "/login",
+          icon: <VpnKeyIcon />,
+          title: "Login",
+        },
+      ];
 
   return (
     <Drawer
@@ -83,7 +84,16 @@ export const AppDrawer = (props: AppDrawerProps) => {
       </div>
       <Divider />
       <List>
-        {drawerItems.map((item) => (
+        {primaryDrawerItems.map((item) => (
+          <ListItem button component={Link} to={item.link} key={item.link}>
+            <ListItemIcon>{item.icon}</ListItemIcon>
+            <ListItemText primary={item.title} />
+          </ListItem>
+        ))}
+      </List>
+      <Divider />
+      <List>
+        {secondaryDrawerItems.map((item) => (
           <ListItem button component={Link} to={item.link} key={item.link}>
             <ListItemIcon>{item.icon}</ListItemIcon>
             <ListItemText primary={item.title} />

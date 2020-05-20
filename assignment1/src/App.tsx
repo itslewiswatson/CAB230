@@ -9,7 +9,8 @@ import { AppShell } from "./global/app-shell/AppShell";
 import { AuthProvider } from "./global/auth/AuthContext";
 import { ApiProvider } from "./global/network/ApiContext";
 import { PageNotFoundProvider } from "./global/page-not-found/PageNotFoundContext";
-import { LewisThemeProvider } from "./global/theme/ThemeContext";
+import { SnackbarProvider } from "./global/snackbar/SnackbarContext";
+import { ThemeProvider } from "./global/theme/ThemeContext";
 
 export const App = () => {
   return (
@@ -17,13 +18,15 @@ export const App = () => {
       <PageNotFoundProvider>
         <ApiProvider>
           <AuthProvider>
-            <LewisThemeProvider>
+            <ThemeProvider>
               <QueryParamProvider>
                 <MuiPickersUtilsProvider utils={MomentUtils}>
-                  <ShellGateway />
+                  <SnackbarProvider>
+                    <ShellGateway />
+                  </SnackbarProvider>
                 </MuiPickersUtilsProvider>
               </QueryParamProvider>
-            </LewisThemeProvider>
+            </ThemeProvider>
           </AuthProvider>
         </ApiProvider>
       </PageNotFoundProvider>

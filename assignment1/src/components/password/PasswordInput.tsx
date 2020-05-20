@@ -22,9 +22,8 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.primary.main,
       cursor: "pointer",
     },
-  })
+  }) 
 );
-
 type PasswordInputProps = {
   password: string;
   handlePasswordChange: (
