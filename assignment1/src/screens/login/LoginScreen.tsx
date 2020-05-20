@@ -66,7 +66,7 @@ export const LoginScreen = () => {
         <Grid item xs={10} md={6}>
           <Card>
             <CardContent>
-              <Typography variant="h6">Please login to stonks here</Typography>
+              <Typography variant="h6">Please login to stocks here</Typography>
               <form>
                 <Grid container spacing={1} direction="column">
                   <Grid item xs={12}>
