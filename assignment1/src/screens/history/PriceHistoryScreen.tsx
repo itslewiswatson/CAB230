@@ -11,7 +11,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Line as LineGraph } from "react-chartjs-2";
 import { DebounceInput } from "react-debounce-input";
 import { DateParam, StringParam, useQueryParam } from "use-query-params";
-import { LewisCard } from "../../components/card/LewisCard";
+import { CustomCard } from "../../components/card/CustomCard";
 import { NotLoggedInCard } from "../../components/card/NotLoggedInCard";
 import {
   SingleStockCard,
@@ -132,16 +132,16 @@ export const PriceHistoryScreen = () => {
         <NotLoggedInCard />
         {!isLoggedIn ? (
           <Grid item xs={6} md={6}>
-            <LewisCard>
+            <CustomCard>
               <Typography>
                 You must be authenticated to interact with this page.
               </Typography>
-            </LewisCard>
+            </CustomCard>
           </Grid>
         ) : (
           <>
             <Grid item xs>
-              <LewisCard>
+              <CustomCard>
                 <Grid
                   item
                   container
@@ -192,7 +192,7 @@ export const PriceHistoryScreen = () => {
                     />
                   </Grid>
                 </Grid>
-              </LewisCard>
+              </CustomCard>
             </Grid>
 
             {symbol && stockData.length > 1 && !stockData[0].message ? (
@@ -213,7 +213,7 @@ export const PriceHistoryScreen = () => {
               stockData &&
               stockData.length > 1 &&
               response?.status !== 404 ? (
-                <LewisCard>
+                <CustomCard>
                   <LineGraph
                     data={{
                       labels: stockDates,
@@ -242,7 +242,7 @@ export const PriceHistoryScreen = () => {
                       ],
                     }}
                   />
-                </LewisCard>
+                </CustomCard>
               ) : isLoading ? (
                 <CircularProgress />
               ) : response && response?.status === 404 ? (
@@ -255,13 +255,13 @@ export const PriceHistoryScreen = () => {
                 stockData.length === 1 ? (
                 <SingleStockCard stock={stockData[0]} />
               ) : (
-                <LewisCard>
+                <CustomCard>
                   <>
                     <Typography>
                       Please enter a symbol to continue...
                     </Typography>
                   </>
-                </LewisCard>
+                </CustomCard>
               )}
             </Grid>
           </>

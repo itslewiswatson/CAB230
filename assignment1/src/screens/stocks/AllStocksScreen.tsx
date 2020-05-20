@@ -1,6 +1,6 @@
 import { CircularProgress, Grid, Typography } from "@material-ui/core";
 import React from "react";
-import { LewisCard } from "../../components/card/LewisCard";
+import { CustomCard } from "../../components/card/CustomCard";
 import { NotLoggedInCard } from "../../components/card/NotLoggedInCard";
 import { StocksResponse } from "../../components/stocks/SingleStockCard";
 import { useApiUrl } from "../../global/network/useApiUrl";
@@ -48,11 +48,11 @@ export const AllStocksScreen = () => {
               title="All Stocks"
             />
           ) : (
-            <LewisCard>
+            <CustomCard>
               <Typography>
                 Something has gone wrong. Try again later.
               </Typography>
-            </LewisCard>
+            </CustomCard>
           )}
         </Grid>
       </Grid>

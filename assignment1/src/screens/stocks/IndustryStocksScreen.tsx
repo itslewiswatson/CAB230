@@ -2,11 +2,11 @@ import {
   CircularProgress,
   Grid,
   TextField,
-  Typography
+  Typography,
 } from "@material-ui/core";
 import React, { useEffect, useMemo, useState } from "react";
 import { DebounceInput } from "react-debounce-input";
-import { LewisCard } from "../../components/card/LewisCard";
+import { CustomCard } from "../../components/card/CustomCard";
 import { NotLoggedInCard } from "../../components/card/NotLoggedInCard";
 import { StocksResponse } from "../../components/stocks/SingleStockCard";
 import { useApiUrl } from "../../global/network/useApiUrl";
@@ -52,7 +52,7 @@ export const IndustryStocksScreen = () => {
       <>
         <NotLoggedInCard />
         <Grid item xs={12} md={4}>
-          <LewisCard>
+          <CustomCard>
             <DebounceInput
               fullWidth
               minLength={2}
@@ -64,7 +64,7 @@ export const IndustryStocksScreen = () => {
               onChange={(e: any) => setSelectedIndustry(e.target.value)}
               element={TextField}
             />
-          </LewisCard>
+          </CustomCard>
         </Grid>
         {isLoading ? (
           <Grid
@@ -90,9 +90,9 @@ export const IndustryStocksScreen = () => {
             </Grid>
           </>
         ) : (
-          <LewisCard>
+          <CustomCard>
             <Typography>Something has gone wrong. Try again later.</Typography>
-          </LewisCard>
+          </CustomCard>
         )}
       </>
     </Grid>

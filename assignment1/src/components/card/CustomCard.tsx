@@ -1,7 +1,7 @@
 import { Box, Card } from "@material-ui/core";
 import React, { ReactElement } from "react";
 
-export const LewisCard = (props: { children: ReactElement }) => {
+export const CustomCard = (props: { children: ReactElement }) => {
   const { children } = props;
 
   return (

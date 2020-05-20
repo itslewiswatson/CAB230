@@ -1,14 +1,14 @@
 import { Grid, Typography } from "@material-ui/core";
 import React from "react";
 import { useAuth } from "../../global/auth/useAuth";
-import { LewisCard } from "./LewisCard";
+import { CustomCard } from "./CustomCard";
 
 export const NotLoggedInCard = () => {
   const { isLoggedIn } = useAuth();
 
   return !isLoggedIn ? (
     <Grid item xs={12} md={6}>
-      <LewisCard>
+      <CustomCard>
         <>
           <Typography variant="h6">
             It looks like you aren't logged in...
@@ -20,7 +20,7 @@ export const NotLoggedInCard = () => {
             Some features will be restricted without an account.
           </Typography>
         </>
-      </LewisCard>
+      </CustomCard>
     </Grid>
   ) : null;
 };

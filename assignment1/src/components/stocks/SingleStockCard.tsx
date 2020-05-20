@@ -1,6 +1,6 @@
 import { Grid, Typography } from "@material-ui/core";
 import React from "react";
-import { LewisCard } from "../card/LewisCard";
+import { CustomCard } from "../card/CustomCard";
 
 export interface StocksResponse {
   name: string;
@@ -37,7 +37,7 @@ export const SingleStockCard = (props: SingleStockCardProps) => {
   } = stock;
 
   return (
-    <LewisCard>
+    <CustomCard>
       <Grid container spacing={1} direction="column">
         <Grid item>
           <Typography variant="h6">
@@ -56,6 +56,6 @@ export const SingleStockCard = (props: SingleStockCardProps) => {
           <Typography>{`Volume: ${volumes}`}</Typography>
         </Grid>
       </Grid>
-    </LewisCard>
+    </CustomCard>
   );
 };

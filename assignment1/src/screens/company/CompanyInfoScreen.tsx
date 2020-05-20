@@ -6,7 +6,7 @@ import {
 } from "@material-ui/core";
 import React, { useEffect, useMemo, useState } from "react";
 import { DebounceInput } from "react-debounce-input";
-import { LewisCard } from "../../components/card/LewisCard";
+import { CustomCard } from "../../components/card/CustomCard";
 import { NotLoggedInCard } from "../../components/card/NotLoggedInCard";
 import {
   SingleStockCard,
@@ -39,7 +39,7 @@ export const CompanyInfoScreen = () => {
     <Grid container direction="column" spacing={3}>
       <NotLoggedInCard />
       <Grid item xs={12} md={4}>
-        <LewisCard>
+        <CustomCard>
           <DebounceInput
             fullWidth
             minLength={2}
@@ -51,17 +51,24 @@ export const CompanyInfoScreen = () => {
             onChange={(e: any) => setSymbol(e.target.value)}
             element={TextField}
           />
-        </LewisCard>
+        </CustomCard>
       </Grid>
       <Grid item xs={12} md={4}>
         {isLoading ? (
           <CircularProgress />
         ) : symbol && selectedStock ? (
           <SingleStockCard stock={selectedStock} />
+        ) : symbol && !selectedStock ? (
+          <CustomCard>
+            <Typography>
+              No company with that symbol can be found. Try refining your
+              search.
+            </Typography>
+          </CustomCard>
         ) : (
-          <LewisCard>
-            <Typography>Company information will appear here</Typography>
-          </LewisCard>
+          <CustomCard>
+            <Typography>Enter a symbol above to get started...</Typography>
+          </CustomCard>
         )}
       </Grid>
     </Grid>
