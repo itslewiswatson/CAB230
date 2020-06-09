@@ -1,20 +1,35 @@
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+let express = require("express");
+let path = require("path");
+let cookieParser = require("cookie-parser");
+let logger = require("morgan");
+const createHttpError = require("http-errors");
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+let db = require("./middleware/db");
 
-var app = express();
+let indexRouter = require("./routes/index");
+let usersRouter = require("./routes/users");
+let stocksRouter = require("./routes/stocks");
 
-app.use(logger('dev'));
+let app = express();
+
+app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, "public")));
+app.use(db);
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use("/", indexRouter);
+app.use("/users", usersRouter);
+app.use("/stocks", stocksRouter);
+
+app.use((req, res, next) => {
+  next(createHttpError(404));
+});
+
+app.use((err, req, res, next) => {
+  res.status(err.status || 500);
+  res.send();
+});
 
 module.exports = app;
