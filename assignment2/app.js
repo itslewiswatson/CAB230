@@ -1,16 +1,16 @@
-let express = require("express");
-let path = require("path");
-let cookieParser = require("cookie-parser");
-let logger = require("morgan");
+const express = require("express");
+const path = require("path");
+const cookieParser = require("cookie-parser");
+const logger = require("morgan");
 const createHttpError = require("http-errors");
 
-let db = require("./middleware/db");
+const db = require("./middleware/db");
 
-let indexRouter = require("./routes/index");
-let usersRouter = require("./routes/users");
-let stocksRouter = require("./routes/stocks");
+const indexRouter = require("./routes/index");
+const usersRouter = require("./routes/users");
+const stocksRouter = require("./routes/stocks");
 
-let app = express();
+const app = express();
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -20,7 +20,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(db);
 
 app.use("/", indexRouter);
-app.use("/users", usersRouter);
+app.use("/user", usersRouter);
 app.use("/stocks", stocksRouter);
 
 app.use((req, res, next) => {
@@ -28,8 +28,10 @@ app.use((req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
+  const error = req.app.get("env") === "development" ? err : true;
+
   res.status(err.status || 500);
-  res.send();
+  res.json({ error, message: err.message });
 });
 
 module.exports = app;

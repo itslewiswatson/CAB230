@@ -1,8 +1,8 @@
-const SECRET_TOKEN_KEY = "scotty_and_the_ninjas";
-
 const jwt = require("jsonwebtoken");
 
-module.exports = (req, res, next) => {
+module.exports.SECRET_TOKEN_KEY = "scotty_and_the_ninjas";
+
+module.exports.authorize = (req, res, next) => {
   const unparsedToken = req.headers["authorization"];
   let token = null;
 
@@ -12,10 +12,11 @@ module.exports = (req, res, next) => {
     res
       .status(401)
       .json({ error: true, message: "Authorization header not found" });
+    return;
   }
 
   try {
-    const decoded = jwt.verify(token, SECRET_TOKEN_KEY);
+    const decoded = jwt.verify(token, module.exports.SECRET_TOKEN_KEY);
 
     if (decoded.exp < Date.now()) {
       res.status(403).json({ error: true, message: "token expired" });

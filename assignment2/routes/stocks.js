@@ -7,7 +7,7 @@ router.get(
   (req, res, next) => {
     for (let param in req.query) {
       if (param !== "industry") {
-        res.status(400).send({
+        res.status(400).json({
           error: true,
           message: "Invalid query parameter: only 'industry' is permitted",
         });
@@ -16,7 +16,7 @@ router.get(
     }
     next();
   },
-  (req, res) => {
+  (req, res, next) => {
     const industry = req.query["industry"];
 
     let query = industry
@@ -24,16 +24,19 @@ router.get(
       : "SELECT name, symbol, industry FROM stocks GROUP BY symbol, name, industry";
 
     req.db.query(query, [`%${industry}%`], (err, result) => {
-      if (err) throw err;
+      if (err) {
+        next(err);
+        return;
+      }
 
       if (result.length === 0) {
         res
           .status(400)
-          .send({ error: true, message: "Industry sector not found" });
+          .json({ error: true, message: "Industry sector not found" });
         return;
       }
 
-      res.send(result);
+      res.json(result);
     });
   }
 );
@@ -48,7 +51,7 @@ router.get(
       symbol.length < 1 ||
       symbol.length > 5
     ) {
-      res.status(400).send({
+      res.status(400).json({
         error: true,
         message: "Stock symbol incorrect format - must be 1-5 capital letters",
       });
@@ -58,7 +61,7 @@ router.get(
   },
   (req, res, next) => {
     if (req.query && (req.query.to || req.query.from)) {
-      res.status(400).send({
+      res.status(400).json({
         error: true,
         message:
           "Date parameters only available on authenticated route /stocks/authed",
@@ -75,25 +78,25 @@ router.get(
     req.db.query(query, [symbol], (err, result) => {
       if (err) throw err;
       if (result.length < 1) {
-        res.send({
+        res.json({
           error: true,
           message: "No entry for symbol in stocks symbol in database",
         });
         return;
       }
 
-      res.send(result[0]);
+      res.json(result[0]);
     });
   }
 );
 
 router.get(
   "/authed/:symbol",
-  auth,
+  auth.authorize,
   (req, res, next) => {
     for (let param in req.query) {
       if (param !== "to" && param !== "from") {
-        res.status(400).send({
+        res.status(400).json({
           error: true,
           message:
             "Parameters allowed are 'from' and 'to', example: /stocks/authed/AAL?from=2020-03-15",
@@ -108,7 +111,7 @@ router.get(
       (req.query.to && !Date.parse(req.query.to)) ||
       (req.query.from && !Date.parse(req.query.from))
     ) {
-      res.status(400).send({
+      res.status(400).json({
         error: true,
         message:
           "Parameters allowed are 'from' and 'to', example: /stocks/authed/AAL?from=2020-03-15",
@@ -117,11 +120,10 @@ router.get(
     }
     next();
   },
-  (req, res) => {
+  (req, res, next) => {
     let query =
       "SELECT timestamp, symbol, name, industry, open, high, low, close, volumes FROM stocks WHERE symbol = ?";
-
-    let args = [req.params["symbol"]];
+    const args = [req.params["symbol"]];
 
     if (req.query.to && req.query.from) {
       query += " AND timestamp BETWEEN ? AND ?";
@@ -138,10 +140,13 @@ router.get(
     }
 
     req.db.query(query, args, (err, result) => {
-      if (err) throw err;
+      if (err) {
+        next(err);
+        return;
+      }
 
       if (result.length === 0) {
-        res.status(404).send({
+        res.status(404).json({
           error: true,
           message:
             "No entries available for query symbol for supplied date range",
@@ -150,11 +155,11 @@ router.get(
       }
 
       if (result.length === 1) {
-        res.send(result[0]);
+        res.json(result[0]);
         return;
       }
 
-      res.send(result);
+      res.json(result);
     });
   }
 );
