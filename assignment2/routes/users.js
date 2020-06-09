@@ -33,7 +33,7 @@ router.post("/login", (req, res, next) => {
       }
 
       const user = result[0];
-      const match = bcrypt.compare(password, user.hash);
+      const match = bcrypt.compareSync(password, user.hash);
 
       if (!match) {
         res
@@ -46,7 +46,7 @@ router.post("/login", (req, res, next) => {
       const expiresIn = 60 * 60 * 24;
       const exp = Date.now() + expiresIn * 1000;
       const token = jwt.sign({ email, exp }, secretKey);
-      res.json({ token_type: "Bearer", token, expires_in: expiresIn });
+      res.json({ token, token_type: "Bearer", expires_in: expiresIn });
     }
   );
 });
@@ -89,7 +89,7 @@ router.post("/register", (req, res, next) => {
             return;
           }
 
-          res.json({ success: true, message: "User created" });
+          res.status(201).json({ success: true, message: "User created" });
         }
       );
     }

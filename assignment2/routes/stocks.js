@@ -31,7 +31,7 @@ router.get(
 
       if (result.length === 0) {
         res
-          .status(400)
+          .status(404)
           .json({ error: true, message: "Industry sector not found" });
         return;
       }
@@ -78,7 +78,7 @@ router.get(
     req.db.query(query, [symbol], (err, result) => {
       if (err) throw err;
       if (result.length < 1) {
-        res.json({
+        res.status(404).json({
           error: true,
           message: "No entry for symbol in stocks symbol in database",
         });

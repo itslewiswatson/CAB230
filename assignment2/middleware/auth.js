@@ -10,7 +10,7 @@ module.exports.authorize = (req, res, next) => {
     token = unparsedToken.split(" ")[1];
   } else {
     res
-      .status(401)
+      .status(403)
       .json({ error: true, message: "Authorization header not found" });
     return;
   }
