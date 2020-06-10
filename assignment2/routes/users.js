@@ -3,97 +3,84 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const auth = require("../middleware/auth");
 const jwt = require("jsonwebtoken");
+const httpError = require("../util/httpError");
 
 router.post("/login", (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
 
+  /**
+   * Ensure both email and password are present
+   */
   if (!email || !password) {
-    res.status(400).send({
-      error: true,
-      message: "Request body invalid - email and password are required",
-    });
-    return;
+    throw httpError(
+      400,
+      "Request body invalid - email and password are required"
+    );
   }
 
-  req.db.query(
-    "SELECT * FROM users WHERE email = ?",
-    [email],
-    (err, result) => {
-      if (err) {
-        next(err);
-        return;
-      }
+  const query = req.knex.select("*").from("users").where("email", "=", email);
 
+  query
+    .then((result) => {
+      // No account exists for email
       if (result.length === 0) {
-        res
-          .status(401)
-          .send({ error: true, message: "Incorrect email or password" });
-        return;
+        throw httpError(401, "Incorrect email or password");
+      } else {
+        // Determine if password on record is the same as given password
+        const user = result[0];
+        return bcrypt.compareSync(password, user.hash);
       }
-
-      const user = result[0];
-      const match = bcrypt.compareSync(password, user.hash);
-
+    })
+    .then((match) => {
+      // They do not match, cancel request
       if (!match) {
-        res
-          .status(401)
-          .send({ error: true, message: "Incorrect email or password" });
-        return;
+        throw httpError(401, "Incorrect email or password");
       }
 
+      // They do match, generate new token
       const secretKey = auth.SECRET_TOKEN_KEY;
-      const expiresIn = 60 * 60 * 24;
+      const expiresIn = 60 * 60 * 24; // 24 hours
       const exp = Date.now() + expiresIn * 1000;
       const token = jwt.sign({ email, exp }, secretKey);
       res.json({ token, token_type: "Bearer", expires_in: expiresIn });
-    }
-  );
+    })
+    .catch((err) => next(err));
 });
 
 router.post("/register", (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
 
-  if (!email || !password) {
-    res.status(400).json({
-      error: true,
-      message: "Request body invalid - email and password are required",
-    });
-    return;
+  /**
+   * Ensure both email and password are present
+   */ if (!email || !password) {
+    throw httpError(
+      400,
+      "Request body invalid - email and password are required"
+    );
   }
 
-  req.db.query(
-    "SELECT * FROM users WHERE email = ?",
-    [email],
-    (err, result) => {
-      if (err) {
-        next(err);
-        return;
-      }
+  const query = req.knex.select("*").from("users").where("email", "=", email);
 
-      if (result.length > 0) {
-        res.status(409).json({ error: true, message: "User already exists!" });
-        return;
-      }
-
-      const saltRounds = 10;
-      const hash = bcrypt.hashSync(password, saltRounds);
-
-      req.db.query(
-        "INSERT INTO users (email, hash) VALUES (?, ?)",
-        [email, hash],
-        (err) => {
-          if (err) {
-            next(err);
-            return;
-          }
-
-          res.status(201).json({ success: true, message: "User created" });
-        }
-      );
+  query.then((result) => {
+    // User already exists
+    if (result.length > 0) {
+      throw httpError(409, "User already exists!");
     }
-  );
+
+    // Hash given password with bcrypt to store securely
+    const saltRounds = 10;
+    const hash = bcrypt.hashSync(password, saltRounds);
+
+    const insert = req.knex("users").insert({ email, hash });
+
+    insert
+      .then(() => {
+        res.status(201).json({ success: true, message: "User created" });
+      })
+      .catch((err) => next(err));
+  });
 });
 
 module.exports = router;
