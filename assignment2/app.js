@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
@@ -23,6 +24,13 @@ app.use(logger("common"));
 app.use(helmet());
 app.use(cors());
 app.use(db);
+
+logger.token("req", (req, res) => JSON.stringify(req.headers));
+logger.token("res", (req, res) => {
+  const headers = {};
+  res.getHeaderNames().map((h) => (headers[h] = res.getHeader(h)));
+  return JSON.stringify(headers);
+});
 
 app.use("/", swaggerUi.serve, indexRouter);
 app.use("/user", usersRouter);
