@@ -5,6 +5,7 @@ const logger = require("morgan");
 const createHttpError = require("http-errors");
 const helmet = require("helmet");
 const cors = require("cors");
+const swaggerUi = require("swagger-ui-express");
 
 const db = require("./middleware/db");
 const indexRouter = require("./routes/index");
@@ -23,7 +24,7 @@ app.use(helmet());
 app.use(cors());
 app.use(db);
 
-app.use("/", indexRouter);
+app.use("/", swaggerUi.serve, indexRouter);
 app.use("/user", usersRouter);
 app.use("/stocks", stocksRouter);
 

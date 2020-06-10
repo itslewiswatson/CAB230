@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
+const swaggerUi = require("swagger-ui-express");
+const yaml = require("yamljs");
 
-router.get("/", function (req, res, next) {
-  res.render("index", { title: "Express" });
-});
+// Serve swagger at root level
+router.get("/", swaggerUi.setup(yaml.load("./public/swagger.yaml")));
 
 module.exports = router;
