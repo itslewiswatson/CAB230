@@ -1,12 +1,4 @@
-const knex = require("knex")({
-  client: "mysql",
-  connection: {
-    host: "127.0.0.1",
-    user: "root",
-    password: "password",
-    database: "webcomputing",
-  },
-});
+const knex = require("knex")(require("../db.config"));
 
 module.exports = (req, res, next) => {
   req.knex = knex;
